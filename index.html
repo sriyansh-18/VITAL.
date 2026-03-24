@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vital — Health Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── SIDEBAR ── -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">vital<span class="logo-dot">.</span></div>
+
+    <div class="nav-label">Dashboard</div>
+    <button class="nav-item active" data-section="today">
+      <span class="nav-icon">📊</span> Today
+    </button>
+    <button class="nav-item" data-section="charts">
+      <span class="nav-icon">📈</span> Charts
+    </button>
+    <button class="nav-item" data-section="bmi">
+      <span class="nav-icon">⚖️</span> BMI &amp; Body
+    </button>
+    <button class="nav-item" data-section="history">
+      <span class="nav-icon">🗓️</span> History
+    </button>
+    <button class="nav-item" data-section="settings">
+      <span class="nav-icon">⚙️</span> Settings
+    </button>
+
+    <div class="sidebar-bottom">
+      <div class="streak-pill">
+        🔥 <span id="streak-count">0</span>&nbsp;day streak
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <!-- Top bar -->
+    <div class="topbar">
+      <div>
+        <h1 class="topbar-title" id="section-title">Today</h1>
+        <p class="topbar-date" id="topbar-date"></p>
+      </div>
+      <button class="btn-log" id="btn-open-modal">+ Log entry</button>
+    </div>
+
+    <!-- ── TODAY ── -->
+    <section class="page active" id="page-today">
+      <div class="metrics-grid" id="metrics-grid"></div>
+
+      <div class="row-2col">
+        <div class="card">
+          <p class="card-title">Steps — last 7 days</p>
+          <div class="chart-wrap h160"><canvas id="chart-steps-mini"></canvas></div>
+        </div>
+        <div class="card">
+          <p class="card-title">Sleep — last 7 days</p>
+          <div class="chart-wrap h160"><canvas id="chart-sleep-mini"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">Water intake today</p>
+        <p class="card-sub">Tap a drop to log a glass &mdash; goal: <strong id="water-goal-label">8</strong></p>
+        <div class="water-dots" id="water-dots"></div>
+      </div>
+
+      <div class="card mt16">
+        <p class="card-title">Today's log</p>
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th class="col-icon"></th>
+              <th>Entry</th>
+              <th>Time</th>
+              <th>Value</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="today-log-tbody"></tbody>
+        </table>
+        <p id="no-entries-msg" class="empty-msg">No entries yet today. Hit <em>+ Log entry</em> to start.</p>
+      </div>
+    </section>
+
+    <!-- ── CHARTS ── -->
+    <section class="page" id="page-charts">
+      <div class="stats-row" id="weekly-stats-row"></div>
+
+      <div class="row-2col">
+        <div class="card">
+          <p class="card-title">Steps — this week</p>
+          <div class="chart-wrap h200"><canvas id="chart-steps"></canvas></div>
+        </div>
+        <div class="card">
+          <p class="card-title">Sleep — this week</p>
+          <div class="chart-wrap h200"><canvas id="chart-sleep"></canvas></div>
+        </div>
+      </div>
+
+      <div class="row-2col">
+        <div class="card">
+          <p class="card-title">Calories — this week</p>
+          <div class="chart-wrap h200"><canvas id="chart-calories"></canvas></div>
+        </div>
+        <div class="card">
+          <p class="card-title">Weight trend — last 30 days</p>
+          <div class="chart-wrap h200"><canvas id="chart-weight"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">Mood — this week</p>
+        <div class="chart-wrap h160"><canvas id="chart-mood"></canvas></div>
+      </div>
+
+      <div class="row-2col">
+        <div class="card">
+          <p class="card-title">Workout minutes — this week</p>
+          <div class="chart-wrap h180"><canvas id="chart-workout"></canvas></div>
+        </div>
+        <div class="card">
+          <p class="card-title">Water — this week</p>
+          <div class="chart-wrap h180"><canvas id="chart-water"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── BMI ── -->
+    <section class="page" id="page-bmi">
+      <div class="bmi-grid">
+
+        <div class="card">
+          <p class="card-title">Your BMI</p>
+          <div class="bmi-number" id="bmi-value">—</div>
+          <div class="bmi-cat-label" id="bmi-category">Enter your details →</div>
+
+          <div class="bmi-bar-track">
+            <div class="bmi-needle" id="bmi-needle"></div>
+          </div>
+          <div class="bmi-scale-labels">
+            <span>15</span><span>18.5</span><span>25</span><span>30</span><span>40</span>
+          </div>
+
+          <div class="bmi-legend">
+            <div class="bmi-leg-item bmi-underweight">Underweight &lt;18.5</div>
+            <div class="bmi-leg-item bmi-normal">Normal 18.5–24.9</div>
+            <div class="bmi-leg-item bmi-overweight">Overweight 25–29.9</div>
+            <div class="bmi-leg-item bmi-obese">Obese ≥ 30</div>
+          </div>
+
+          <div class="bmi-tip" id="bmi-tip"></div>
+        </div>
+
+        <div class="card">
+          <p class="card-title">Your profile</p>
+          <div class="profile-form">
+            <div class="form-group">
+              <label for="p-height">Height (cm)</label>
+              <input type="number" id="p-height" placeholder="175" min="100" max="250">
+            </div>
+            <div class="form-group">
+              <label for="p-weight">Weight (kg)</label>
+              <input type="number" id="p-weight" placeholder="70" step="0.1" min="30" max="300">
+            </div>
+            <div class="form-group">
+              <label for="p-age">Age</label>
+              <input type="number" id="p-age" placeholder="25" min="1" max="120">
+            </div>
+            <div class="form-group">
+              <label for="p-sex">Sex</label>
+              <select id="p-sex">
+                <option value="">Select</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+            <div class="form-group full-col">
+              <label for="p-activity">Activity level</label>
+              <select id="p-activity">
+                <option value="1.2">Sedentary (little / no exercise)</option>
+                <option value="1.375">Light (1–3 days / week)</option>
+                <option value="1.55" selected>Moderate (3–5 days / week)</option>
+                <option value="1.725">Active (6–7 days / week)</option>
+                <option value="1.9">Very active (hard daily exercise)</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-primary mt12" id="btn-calc-bmi">Calculate BMI &amp; TDEE</button>
+
+          <div class="tdee-section" id="tdee-section">
+            <p class="card-title mt16">Daily calorie needs (TDEE)</p>
+            <div class="tdee-grid" id="tdee-grid"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card">
+        <p class="card-title">Weight history</p>
+        <div class="chart-wrap h200"><canvas id="chart-bmi-weight"></canvas></div>
+      </div>
+    </section>
+
+    <!-- ── HISTORY ── -->
+    <section class="page" id="page-history">
+      <div class="history-controls">
+        <select id="hist-metric">
+          <option value="all">All metrics</option>
+          <option value="steps">Steps</option>
+          <option value="sleep">Sleep</option>
+          <option value="water">Water</option>
+          <option value="calories">Calories</option>
+          <option value="weight">Weight</option>
+          <option value="mood">Mood</option>
+          <option value="workout">Workout</option>
+        </select>
+        <select id="hist-period">
+          <option value="7">Last 7 days</option>
+          <option value="30" selected>Last 30 days</option>
+          <option value="90">Last 90 days</option>
+          <option value="all">All time</option>
+        </select>
+        <button class="btn-secondary" id="btn-export">↓ Export CSV</button>
+        <button class="btn-danger" id="btn-clear-all">🗑 Clear all data</button>
+      </div>
+
+      <div class="card">
+        <table class="log-table" id="history-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Category</th>
+              <th>Value</th>
+              <th>Note</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody"></tbody>
+        </table>
+        <p id="no-history-msg" class="empty-msg" style="display:none;">No entries found for this filter.</p>
+      </div>
+    </section>
+
+    <!-- ── SETTINGS ── -->
+    <section class="page" id="page-settings">
+      <div class="card settings-card">
+        <p class="card-title">Daily goals</p>
+        <div class="settings-form">
+          <div class="form-group">
+            <label for="goal-steps">Steps goal</label>
+            <input type="number" id="goal-steps" placeholder="10000">
+          </div>
+          <div class="form-group">
+            <label for="goal-sleep">Sleep goal (hrs)</label>
+            <input type="number" id="goal-sleep" step="0.5" placeholder="8">
+          </div>
+          <div class="form-group">
+            <label for="goal-water">Water goal (glasses)</label>
+            <input type="number" id="goal-water" placeholder="8">
+          </div>
+          <div class="form-group">
+            <label for="goal-calories">Calorie goal (kcal)</label>
+            <input type="number" id="goal-calories" placeholder="2200">
+          </div>
+          <div class="form-group">
+            <label for="goal-workout">Workout goal (min/day)</label>
+            <input type="number" id="goal-workout" placeholder="45">
+          </div>
+        </div>
+        <button class="btn-primary mt16" id="btn-save-goals">Save goals</button>
+      </div>
+
+      <div class="card settings-card mt16">
+        <p class="card-title">Data management</p>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:14px;">
+          All data is stored locally in your browser using <code>localStorage</code>. Nothing is sent to any server.
+        </p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn-secondary" id="btn-export-settings">↓ Export CSV</button>
+          <button class="btn-danger" id="btn-clear-settings">🗑 Clear all data</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ── LOG MODAL ── -->
+<div class="modal-overlay" id="log-modal" role="dialog" aria-modal="true" aria-labelledby="modal-heading">
+  <div class="modal">
+    <h2 class="modal-title" id="modal-heading">Log an entry</h2>
+    <div class="modal-fields">
+      <div class="form-group">
+        <label for="log-cat">Category</label>
+        <select id="log-cat">
+          <option value="steps">Steps / Activity</option>
+          <option value="sleep">Sleep</option>
+          <option value="water">Water intake</option>
+          <option value="calories">Calories / Nutrition</option>
+          <option value="weight">Weight</option>
+          <option value="mood">Mood</option>
+          <option value="workout">Workout</option>
+        </select>
+      </div>
+      <div id="modal-dynamic-fields"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="btn-modal-cancel">Cancel</button>
+      <button class="btn-primary" id="btn-modal-save">Save entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<!-- App logic -->
+<script src="app.js"></script>
+</body>
+</html>
