@@ -190,15 +190,13 @@ Requires JavaScript enabled and `localStorage` available (standard in all browse
 
 ---
 
-## 🗺️ Roadmap / Ideas
+## ## 🚧 Future Improvements
 
-- [ ] Dark mode toggle
-- [ ] Weekly email / notification reminders
-- [ ] Import CSV to restore data
-- [ ] Multiple user profiles
-- [ ] Habit streaks per category
-- [ ] Integration with Apple Health / Google Fit (via Web APIs)
-- [ ] PWA support (install as app, offline-first)
+- Dark mode support  
+- Habit streak tracking per metric  
+- Health insights based on user data  
+- Import CSV for data recovery  
+- Progressive Web App (installable app)
 
 ---
 
