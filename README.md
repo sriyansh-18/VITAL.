@@ -5,8 +5,7 @@ A web-based health tracking dashboard to monitor daily habits like sleep, hydrat
 ---
 
 ## 🌐 Live Demo
-https://sriyansh-18.github.io/VITAL./
-
+https://sriyansh-18.github.io/vital-health-tracker/
 ---
 
 ## 📸 Preview
